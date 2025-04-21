@@ -4,26 +4,39 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Project Information -->
     <groupId>sparkjava-hello-world</groupId>
     <artifactId>sparkjava-hello-world</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 
     <dependencies>
+        <!-- Spark Java Core Dependency -->
         <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
             <version>2.7.2</version>
         </dependency>
+
+        <!-- SLF4J for logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
         </dependency>
+
+        <!-- Servlet API dependency for Tomcat (provided by the container) -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
-            <!-- Compile with Java 8 -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -36,23 +49,33 @@
                 </configuration>
             </plugin>
 
-            <!-- Optional: create an executable JAR with dependencies -->
+            <!-- Maven WAR Plugin for packaging WAR file -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
+                <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml> <!-- Optional if no web.xml -->
+                </configuration>
+            </plugin>
+
+            <!-- Maven Enforcer Plugin to enforce Java version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>enforce-java</id>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>enforce</goal>
                         </goals>
                         <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>your.package.Main</mainClass> <!-- Replace with your actual main class -->
-                                </transformer>
-                            </transformers>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[1.8,)</version>
+                                </requireJavaVersion>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
